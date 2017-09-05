@@ -1,0 +1,22 @@
+﻿#action-ledger th { padding-left:20px; padding-right:20px; white-space: nowrap; text-align:center; }
+#action-ledger td { padding-left:5px; padding-right:5px; white-space: nowrap; }
+.vote-yea { padding-left:5px; padding-right:5px; background-color:#3DD27B; }
+.vote-nay { padding-left:5px; padding-right:5px; background-color:#F0606D; }
+.vote-abstain { padding-left:5px; padding-right:5px; background-color:#F1A73D; }
+.vote-veto { padding-left:5px; padding-right:5px; background-color:#C91C1D; }
+.note-PA { background-color:#3DD27B; color:white; }
+.note-PA:after { content:"Privileged Action"; }
+.note-SA { background-color:#F1A73D; color:white; }
+.note-SA:after { content:"System Automatic"; }
+.note-MSG { background-color:yellow; color:red; }
+.note-MSG:after { content:"New Discussion Message(s)"; }
+.note	{ position:relative; padding:1px 3px 1px 3px; font-weight:bold; cursor:default; margin-left:4px;	}
+.note:after { display:none; background-color:yellow; color:#404040; text-align:left; padding:2px 10px 2px 10px; border-radius:10px; border:1px solid #404040; z-index:10; position:absolute; left:15px; top:-10px; }
+.note:hover:after { display: inline; }
+.status { font-size:11px; font-weight:bold; }
+.action-button { font-size:10px; padding:0px 5px 0px 5px; margin-right:5px; margin-bottom:3px; font-weight:bold; }
+.action-button-Yea { background-color:#3DD27B; }
+.action-button-Nay { background-color:#F0606D; }
+.action-button-Abstain { background-color:#F1A73D; }
+.action-button-Veto { background-color:#C91C1D; }
+.action-button-Set-Proxy { background-color:#3C8ABB; }

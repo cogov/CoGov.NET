@@ -1,0 +1,55 @@
+﻿@Html.Script(@<script>
+  $(function() {
+      $("#main-tabs").tabs();
+      $("#ledgers-tabs").tabs();
+      $("#ledger-tabs").tabs();
+  });
+</script>)
+<center>
+
+    <h3 style="padding-top:10px; margin-top:0px; padding-bottom:10px; font-weight:bold;">@CurrentCollective.Name Dashboard</h3>
+
+    <div>
+        <div id="main-tabs" style="margin-right:10px; margin-left:10px; max-width:1200px;">
+            <ul>
+                <li><a href="#main-tab-ledgers">Ledgers</a></li>
+                <li><a href="#main-tab-members-shares">Members/Shares</a></li>
+                <li><a href="#main-tab-agreements">Agreements</a></li>
+            </ul>
+            <div id="main-tab-ledgers">
+                <div id="ledgers-tabs" style="margin-right:10px; margin-left:10px; max-width:1200px;">
+                    <ul>
+                        <li><a href="#ledgers-tab-system">System Ledger</a></li>
+                        <li><a href="#ledgers-tab-new-ledger">+</a></li>
+                    </ul>
+                    <div id="ledgers-tab-system">
+                        <div id="ledger-tabs">
+                            <ul>
+                                <li><a href="#ledger-tab-system-ledger">Action Ledger</a></li>
+                                <li><a href="#ledger-tab-members-voteclout">Members/VoteClout</a></li>
+                                <li><a href="#ledger-tab-new-action">New Action</a></li>
+                            </ul>
+                            <div id="ledger-tab-system-ledger">
+                                @Html.Partial("ActionLedger", CurrentCollective.SystemLedger.GetDisplayView())
+                            </div>
+                            <div id="ledger-tab-members-voteclout">
+                                @Html.Partial("Members", CurrentCollective)
+                            </div>
+                            <div id="ledger-tab-new-action">
+                                @Html.Partial("CreateAction")
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ledgers-tab-new-ledger">
+
+                    </div>
+                </div>
+            </div>
+            <div id="main-tab-members-shares">
+            </div>
+            <div id="main-tab-agreements">
+            </div>
+        </div>
+    </div>
+    <br />
+</center>

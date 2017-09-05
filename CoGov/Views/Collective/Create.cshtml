@@ -1,0 +1,140 @@
+﻿@model CoGov.Web.Models.CreateCollective
+@using Startbutton.Web.Mvc.Helpers
+
+<h1>Create a CoGoverning Collective</h1>
+
+@Html.Script(@<script src="~/Scripts/tinymce/tinymce.js"></script>)
+@Html.Script(@<script type="text/javascript">
+    $(function () {
+
+        $("#UserShares").rules("add", "required");
+        $("#UserVoteClout").rules("add", "required");
+        $("#UserVoteClout").val("");
+
+        $("#use-tinymce").click(function () {
+            useTinyMCE();
+            $(this).hide();
+            event.preventDefault();
+        });
+
+        $("#CreateShares").click(function () {
+            if (this.checked) {
+                $("#create-shares-block").show();
+                $("#ShareName").rules("add", "required");
+                $("#ShareIdentifier").rules("add", "required");
+                $("#bootstrap-form-row-totalshares").hide();
+                $("#FixedNumberOfShares")[0].checked = false;
+            }
+            else {
+                $("#create-shares-block").hide();
+                $("#ShareName")[0].value = "";
+                $("#ShareIdentifier")[0].value = "";
+                $("#FixedNumberOfShares")[0].checked = false;
+                $("#IsTransferable")[0].checked = false;
+                $("#AssetBacked")[0].checked = false;
+                $("#TotalShares")[0].value = "";
+                $("#UserShares")[0].value = "";
+                $("#bootstrap-form-row-totalshares").hide();
+            }
+        });
+
+        $("#FixedNumberOfShares").click(function () {
+            if (this.checked) {
+                $("#bootstrap-form-row-totalshares").show();
+                $("#TotalShares").rules("add", "required");
+            }
+            else
+                $("#bootstrap-form-row-totalshares").hide();
+        });
+
+
+    });
+
+    function useTinyMCE() {
+        tinyMCE.init({
+            mode : "specific_textareas",
+            editor_selector : "allow-html",
+            theme: "modern",
+            plugins: "textcolor colorpicker emoticons image media link lists advlist",
+            toolbar: "forecolor backcolor emoticons image media link lists",
+            height: 200,
+        });
+    }
+</script>)
+@Html.Css(@<style>
+    #use-tinymce { font-weight:normal; font-size:11px; }
+    #mceu_11 { margin-top:1px; border-radius:4px; }
+</style>)
+
+@using (Html.BeginForm(actionName: RI.Action, controllerName: RI.Controller, method: FormMethod.Post, htmlAttributes: new { }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Bootstrap.FormRow("Name", "The name of the new Collective")
+        
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 form-row">
+            <label class="control-label" for="Private,AllowPublicJoin">Privacy</label>
+            <div class="editor-block-check-boxes">
+                @Html.EditorFor(model => model.Private, new { htmlAttributes = new { } }) <label title="This is a test.">Private</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                @Html.EditorFor(model => model.AllowPublicJoin) Allow Public Join
+            </div>
+        </div>
+
+        @Bootstrap.FormRow("Description", "A brief description of the purpose or mission of this Collective.")
+        
+        <div id="bootstrap-form-row-Details" class="col-xs-12 col-sm-10 col-md-8 col-lg-6 form-row" title="This is a test.">
+            <label class="control-label" for="Details">Details<br /><a id="use-tinymce" href="#">Use HTML Editor</a> </label>
+            <div class="editor-block">
+                @Html.ValidationMessage("Details", "", new { @class = "text-danger" })
+                @Html.Editor("Details", new { htmlAttributes = new { @class = "form-control allow-html", placeholder = @"All the juicy details you want to share with the world. Click ""Use HTML Editor"" on the left if you want to make it pretty!"  } })
+            </div>
+        </div>
+        
+        @Bootstrap.FormRow("UserVoteClout", "Your vote clout. If you are not sure, go with 1.")
+
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 form-row">
+            <label class="control-label" for="CreateShares">Shares</label>
+            <div class="editor-block-check-boxes">
+                @Html.EditorFor(model => model.CreateShares) Create A Share Type
+            </div>
+        </div>
+
+        <div id="create-shares-block" style="display:none;">
+            @Bootstrap.FormRow("ShareName", "A descriptive name for the share type.")
+            @Bootstrap.FormRow("ShareIdentifier", "A 2 or 3 character identifier using only capital letters and numbers.")
+
+            <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 form-row">
+                <label class="control-label" for="IsTransferable,AssetBacked,FixedNumberOfShares">Share Attributes</label>
+                <div class="editor-block-check-boxes">
+                    @Html.EditorFor(model => model.FixedNumberOfShares) Fixed Quantity
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    @Html.EditorFor(model => model.IsTransferable) Transferable
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    @Html.EditorFor(model => model.AssetBacked) Asset Backed
+                </div>
+            </div>
+
+            @Bootstrap.FormRow("TotalShares")
+            @Bootstrap.FormRow("UserShares")
+
+        </div>
+
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 form-row" style="margin-top:10px;">
+            <label class="control-label"></label>
+            <div class="col-sm-9 col-md-7 col-lg-6">
+                <input type="submit" value="Create Collective" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+}
+
+<br /><br />
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

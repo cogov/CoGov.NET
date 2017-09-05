@@ -1,0 +1,228 @@
+﻿@model List<LedgerEntry>
+@Html.Css(@<style>
+	#action-ledger th { padding-left:20px; padding-right:20px; white-space: nowrap; text-align:center; }
+	#action-ledger td { padding-left:5px; padding-right:5px; white-space: nowrap; }
+	.vote-yea { padding-left:5px; padding-right:5px; background-color:#3DD27B; }
+	.vote-nay { padding-left:5px; padding-right:5px; background-color:#F0606D; }
+	.vote-abstain { padding-left:5px; padding-right:5px; background-color:#F1A73D; }
+	.vote-veto { padding-left:5px; padding-right:5px; background-color:#C91C1D; }
+	.note-PA { background-color:#3DD27B; color:white; }
+	.note-PA:after { content:"Privileged Action"; }
+	.note-SA { background-color:#F1A73D; color:white; }
+	.note-SA:after { content:"System Automatic"; }
+	.note-MSG { background-color:yellow; color:red; }
+	.note-MSG:after { content:"New Discussion Message(s)"; }
+	.note-IE { background-color:yellow; color:red; }
+	.note-IE:after { content:"Immediate Execution"; }
+	.note	{ position:relative; padding:1px 3px 1px 3px; font-weight:bold; cursor:default; margin-left:4px;	}
+	.note:after { display:none; background-color:yellow; color:#404040; text-align:left; padding:2px 10px 2px 10px; border-radius:10px; border:1px solid #404040; z-index:10; position:absolute; left:15px; top:-10px; }
+	.note:hover:after { display: inline; }
+	.status { font-size:11px; font-weight:bold; }
+	.action-button { font-size:10px; padding:0px 5px 0px 5px; margin-right:5px; margin-bottom:3px; font-weight:bold; }
+	.action-button-Yea { background-color:#3DD27B; }
+	.action-button-Nay { background-color:#F0606D; }
+	.action-button-Abstain { background-color:#F1A73D; }
+	.action-button-Veto { background-color:#C91C1D; }
+	.action-button-Set-Proxy { background-color:#3C8ABB; }
+</style>)
+@Html.Script(@<script language="javascript">
+    $(function () {
+
+        $(".action-parm").hide();
+        $(".action-time-user").hide();
+        $(".action-vote").hide();
+        $(".child-action").hide();
+        $(".toggle-parms-button").attr("parms-visible", "false");
+        $(".toggle-time-user-button").attr("time-user-visible", "false");
+        $(".toggle-vote-log-button").attr("vote-log-visible", "false");
+        $(".toggle-children-button").attr("children-visible", "false");
+
+        $(".toggle-parms-button").click(function (event) {
+            var $this = $(this);
+
+            if ($this.attr("parms-visible") == "false") {
+                $(".action-parm[parm-for=" + $this.attr("action-id") + "]").show();
+                $this.html("<b>-</b>").attr("parms-visible", "true");
+            }
+            else if ($this.attr("parms-visible") == "true") {
+                $(".action-parm[parm-for=" + $this.attr("action-id") + "]").hide();
+                $this.html("<b>+</b>").attr("parms-visible", "false");
+            }
+
+            event.preventDefault();
+
+        });
+
+        $(".toggle-time-user-button").click(function (event) {
+            var $this = $(this);
+
+            if ($this.attr("time-user-visible") == "false") {
+                $(".action-time-user[parm-for=" + $this.attr("action-id") + "]").show();
+                $this.html("<b>-</b>").attr("time-user-visible", "true");
+            }
+            else if ($this.attr("time-user-visible") == "true") {
+                $(".action-time-user[parm-for=" + $this.attr("action-id") + "]").hide();
+                $this.html("<b>+</b>").attr("time-user-visible", "false");
+            }
+
+            event.preventDefault();
+
+        });
+
+        $(".toggle-vote-log-button").click(function (event) {
+            var $this = $(this);
+
+            if ($this.attr("vote-log-visible") == "false") {
+                $(".action-vote[parm-for=" + $this.attr("action-id") + "]").show();
+                $this.html("<b>-</b>").attr("vote-log-visible", "true");
+            }
+            else if ($this.attr("vote-log-visible") == "true") {
+                $(".action-vote[parm-for=" + $this.attr("action-id") + "]").hide();
+                $this.html("<b>+</b>").attr("vote-log-visible", "false");
+            }
+
+            event.preventDefault();
+
+        });
+
+        $(".toggle-children-button").click(function (event) {
+            var $this = $(this);
+
+            if ($this.attr("children-visible") == "false") {
+                $(".child-action[parm-for=" + $this.attr("action-id") + "]").show();
+                $this.html("<b>-</b>").attr("children-visible", "true");
+            }
+            else if ($this.attr("children-visible") == "true") {
+                $(".child-action[parm-for=" + $this.attr("action-id") + "]").hide().each(function (x, row) {
+                    // close all child row parameters (if open)
+                    $(".toggle-parms-button[action-id=" + row.id.substring(7) + "][parms-visible=true]").trigger("click");
+                });
+                $this.html("<b>+</b>").attr("children-visible", "false");
+            }
+
+            event.preventDefault();
+
+        });
+
+    });
+
+    function findBootstrapEnvironment() {
+        var envs = ['xs', 'sm', 'md', 'lg'];
+
+        var $el = $('<div>');
+        $el.appendTo($('body'));
+
+        for (var i = envs.length - 1; i >= 0; i--) {
+            var env = envs[i];
+
+            $el.addClass('hidden-' + env);
+            if ($el.is(':hidden')) {
+                $el.remove();
+                return env;
+            }
+        }
+    }
+</script>)
+<!-- #region Helper: ActionRow -->
+@helper ActionRow(LedgerEntry le)
+{
+string classname = "parent-action";
+string bgcolor = "#E0E0E0";
+
+if (le.ParentId != null)
+{
+    classname = "child-action";
+    bgcolor = "#F0F0F0";
+}
+
+    <tr class="@(classname)" id="action-@(le.Id)" parm-for="@(le.ParentId)" style="border-top:1px solid #AAAAAA; background-color:@(bgcolor);">
+        <td style="text-align:right;"></td>
+        @if (le.ParentId == null)
+        {
+            <td style="text-align:left;">@(le.Number) (<a href="#" class="toggle-children-button" action-id="@(le.Id)"><b>+</b></a>)</td>
+            <td>@(le.TimeStamp.ToString("MM/dd/yyyy")) (<a href="#" class="toggle-time-user-button" action-id="@(le.Id)"><b>+</b></a>)</td>
+        }
+        else
+        {
+            <td style="text-align:left;" colspan="2">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;
+                @(le.Number)
+            </td>
+        }
+        <td style="text-align:left;" @if (le.ParentId != null) { <text>colspan="4"</text> }>
+            @(le.DisplayDescription)
+            @if (le.Parameters.Count > 0)
+            {
+                <text>(<a href="#" class="toggle-parms-button" action-id="@(le.Id)"><b>+</b></a>)</text>
+            }
+        </td>
+        @if (le.ParentId == null)
+        {
+            <td>@(le.YeaThresholdStatusString)</td>
+            <td class="votes-cell">
+                @if (le.ParentId == null && !le.HasFlag(LEDGER_ACTION_FLAG.SystemAutomatic) && !le.HasFlag(LEDGER_ACTION_FLAG.Privileged))
+                {
+                    <div><span class="vote-yea">@(le.VoteCountYea)</span> / <span class="vote-nay">@(le.VoteCountNay)</span> / <span class="vote-abstain">@(le.VoteCountAbstain)</span> / <span class="vote-veto">@(le.VoteCountVeto)</span> (<a href="#" class="toggle-vote-log-button" action-id="@(le.Id)"><b>+</b></a>)</div>
+                }
+            </td>
+            <td style="vertical-align:middle; text-align:center;">@(le.StatusText)</td>
+        }
+        <td style="font-size:9px; vertical-align:middle; text-align:center;">
+            @if (le.HasFlag(LEDGER_ACTION_FLAG.SystemAutomatic)) { @Note("SA"); }
+            @if (le.HasFlag(LEDGER_ACTION_FLAG.Privileged)) { @Note("PA"); }
+            @if (le.HasFlag(LEDGER_ACTION_FLAG.ExecuteImmediately)) { @Note("IE"); }
+        </td>
+        <td>actions</td>
+    </tr>
+    <tr class="action-time-user" id="action-@(le.Id)-time-user" parm-for="@(le.Id)" style="background-color:#F4F4F4;">
+        <td></td>
+        <td></td>
+        <td style="font-size:11px;">@(le.TimeStamp.ToString("hh:mm:ss tt"))</td>
+        <td style="font-size:11px; text-align:left;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&nbsp;<b>Submitted by:</b> @(le.HasFlag(LEDGER_ACTION_FLAG.SystemAutomatic) ? "SYSTEM" : le.SubmitterUser.NameFull)</td>
+        <td colspan="5"></td>
+    </tr>
+}
+<!-- #endregion -->
+<!-- #region Helper: ParmRow -->
+@helper ParmRow(LedgerEntry le, LedgerEntryParameter lep)
+{
+    <tr class="action-parm" id="action-@(le.Id)-parm-name" parm-for="@(le.Id)" style="background-color:#FFFFFF;">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td style="text-align:left; font-size:11px;" colspan="7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&nbsp;<b>@(lep.ActionParameter.DisplayCaption):</b> @(lep.DisplayValue())</td>
+    </tr>
+}
+<!-- #endregion -->
+<!-- #region Helper: ActionRow -->
+@helper Note(string note)
+{
+    <span class="note-@(note) note">@(note)</span>
+}
+<!-- #endregion -->
+
+<div style="overflow: auto; overflow-y: hidden; margin-top:10px;">
+    <table style="color:black; border:1px solid #AAAAAA; display:inline-block;" id="action-ledger">
+        <tr style="background-color:#3C8ABB; color:white; height:50px;">
+            <th></th>
+            <th>Action ID</th>
+            <th>Date/User</th>
+            <th>Action</th>
+            <th>Threshold</th>
+            <th class="votes-cell"><span class="vote-yea">Yeas</span> / <span class="vote-nay">Nays</span><br /><span class="vote-abstain">Abstains</span> / <span class="vote-veto">Vetos</span></th>
+            <th>Status</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (LedgerEntry le in Model)
+        {
+            @ActionRow(le);
+
+            foreach (LedgerEntryParameter lep in le.Parameters.OrderBy(p => p.ActionParameter.Sequence))
+            {
+                @ParmRow(le, lep);
+            }
+
+        }
+    </table>
+</div>

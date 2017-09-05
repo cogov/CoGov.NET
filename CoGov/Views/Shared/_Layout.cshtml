@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="<?php echo $desc ?>">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <title>@ViewBag.Title - Digitial CoGovernance Web (CoGov)</title>
+    <meta name="description" content="@ViewBag.PageDescription">
+    <meta property="og:description" content="@ViewBag.PageDescription">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="@ViewBag.Title - Digitial CoGovernance Web (CoGov)">
+    <meta property="og:site_name" content="CoGov.Tech: The Digitial CoGovernance Web">
+    <meta property="og:url" content="@Request.Path">
+    <meta property="og:image" content="">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="">
+    <meta property="og:image:height" content="">
+    <meta property="fb:app_id" content="1407179975980935">
+
+    @Styles.Render("~/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Html.RenderCss()
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="~/">DIGITAL COGOVERNANCE INTERFACE</a>
+            </div>
+            <div class="navbar-collapse collapse navbar-right">
+                <ul class="nav navbar-nav">
+                    <li><a href="~/">HOME</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" onclick="void(0);" data-toggle="dropdown">COLLECTIVES <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Collective/Create/">Create</a></li>
+                            @if (CurrentUser != null)
+                            {
+                                foreach (var c in CurrentUser.Collectives)
+                                {
+                                    <li><a href="/Collective/Dashboard/@c.Id">@c.Name</a></li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                    <li><a target="_blank" href="https://www.patreon.com/user?u=4597851">SUPPORT US!</a></li>
+                </ul>
+                @if (Request.IsAuthenticated)
+                {
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                @Html.ActionLink("ACCOUNT", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                            </li>
+                            <li><a href="javascript:document.getElementById('logoutForm').submit()">LOG OUT</a></li>
+                        </ul>
+                    }
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        @*<li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+                        <li>@Html.ActionLink("LOGIN", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                    </ul>
+                }
+
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+    <div id="headerwrap" style="width:100%; background-size:contain; background-image:url('/images/asc-flower-of-life-blue-green-bg.png'); padding-top:80px;">
+        @RenderBody()
+    </div>
+    <div id="footerwrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h4>New Earth Collective</h4>
+                    <div class="hline-w"></div>
+                    <p>We are here to create templates that embody the New Earth vision and principles. Building a bridge from the old paradigm to the new, using tools, models, systems, and technologies for practical human and material sustainability; which support a holistic environment where nature, people, advanced research and technological development can thrive.</p>
+                </div>
+                <div class="col-lg-4">
+                    <h4>Our Vision</h4>
+                    <div class="hline-w"></div>
+                    <p>Paradise on Earth, where ecological balance, shared abundance, self organizing systems, synergistic co-creation, co-evolving exploration and self discovery all thrive in one unified field.</p>
+                </div>
+                <div class="col-lg-4">
+                    <h4>Open Source Software</h4>
+                    <div class="hline-w"></div>
+                    <h5>Open Source & Non-Profit Software as a Service (SaaS)</h5>
+                    <div style="text-align:center;">
+                        <a href="https://www.patreon.com/user?u=4597851"><img border="0" style="width:200px;" src="~/images/becomeAPatronBanner.png"></a>
+                    </div>
+                    <p>We are writing open source software to allow for cooperative governance of land, resources, and information; making access available to everyone.</p>
+                    <p>This benefits us, it benefits you, and it benefits the world!</p>
+                    <p><b>Win-Win-Win!</b></p>
+                </div>
+
+            </div><! --/row -->
+        </div><! --/container -->
+    </div><! --/footerwrap -->
+
+
+    @Scripts.Render("~/bundles/base")
+    @RenderSection("scripts", required: false)
+    @Html.RenderScripts()
+</body>
+</html>

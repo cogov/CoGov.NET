@@ -1,0 +1,71 @@
+﻿@using CoGov.Models
+@{
+    ViewBag.Title = "Digital CoGovernance Services";
+}
+<h1 style="text-align:center;">@ViewBag.Title</h1>
+
+@Html.Css(@<style>
+    #digital-governance-doc { height:100%; margin-left:20px; margin-right:20px; padding:40px; padding-top:5px; border:2px solid #404040; border-radius:10px; max-width:1000px; background-color:white; display:inline-block; }
+    #digital-governance-doc .title { font-size:36px; font-weight:bold; text-align:center; line-height:36px; }
+    #digital-governance-doc p { text-align:left; }
+    #digital-governance-doc h1 { color:black; text-align:left; }
+    #digital-governance-doc h2 { color:black; text-align:left; }
+    #digital-governance-doc h3 { color:black; text-align:left; }
+    #digital-governance-doc h4 { padding-top:10px; color:black; text-align:left; }
+</style>)
+
+@if (!Request.IsAuthenticated)
+{
+    <div style="text-align:center;">
+        <div id="digital-governance-doc">
+            <div style="text-align:right; font-size:10px; font-weight:bold; padding-bottom:10px;">Commentable Source: <a target="_blank" href="https://docs.google.com/document/d/1YW0-xppWH_OtrJkhdzMrPUJko4mo9QGk1XnITFDmQp4">https://docs.google.com/document/d/1YW0-xppWH_OtrJkhdzMrPUJko4mo9QGk1XnITFDmQp4</a></div>
+            @Html.Raw(ViewBag.DocText)
+            <div style="text-align:right; font-size:10px; font-weight:bold;">Commentable Source: <a target="_blank" href="https://docs.google.com/document/d/1YW0-xppWH_OtrJkhdzMrPUJko4mo9QGk1XnITFDmQp4">https://docs.google.com/document/d/1YW0-xppWH_OtrJkhdzMrPUJko4mo9QGk1XnITFDmQp4</a></div>
+            <hr style="border-color:black;" />
+            @Html.Partial("/Views/Account/_ExternalLoginsListPartial.cshtml", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <h3 style="text-align:center;">Logged in as @HttpContext.Current.User.Identity.Name</h3>
+
+            <div class="hidden-sm col-md-1"></div>
+
+            @if (CurrentUser.Collectives.Count > 0)
+            {
+                <div id="collective-list" class="col-sm-6 col-md-4 well" style="text-align:center;">
+                    <h4 style="text-align:center;">You are part of these Collectives:</h4>
+                    @foreach (Collective c in ViewBag.CurrentUser.Collectives)
+                    {
+                        <div>
+                            @c.Name (<a href="~/Collective/Dashboard/@c.Id">enter</a>)<br />
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="hidden-sm col-md-1"></div>
+
+            <div id="collective-list" class="col-sm-6 col-md-4 well" style="text-align:center;">
+                <h4 style="text-align:center;">You can also Create or Join other Collectives:</h4>
+                <input type="button" class="btn btn-default" value="Create Collective" onclick="location='/Collective/Create';" />
+                @foreach (Collective c in ViewBag.PublicCollectives)
+                {
+                    if (((IList<Collective>)ViewBag.CurrentUser.Collectives).Count(cx => cx.Id == c.Id) == 0)
+                    {
+                        <div>
+                            @c.Name (<a href="~/Collective/Info/@c.Id">info</a>)<br />
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="hidden-sm col-md-1"></div>
+
+        </div>
+    </div>
+}
+<br />
