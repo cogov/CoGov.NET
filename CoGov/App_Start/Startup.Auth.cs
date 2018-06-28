@@ -9,6 +9,7 @@ using Microsoft.Owin.Security.Google;
 using Owin;
 using CoGov.Models;
 using Microsoft.Owin.Security.Facebook;
+using Owin.Security.Providers.GroupUp;
 using System.Net.Http;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Twitter;
@@ -40,7 +41,7 @@ namespace CoGov
                         validateInterval: TimeSpan.FromMinutes(30),
                         regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
                 }
-            });            
+            });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.
@@ -99,8 +100,18 @@ namespace CoGov
             //authopts.Scope.Add("email");
             //app.UseGoogleAuthentication(authopts);
 
-        }
 
+            // GroupUp
+
+            var groupUpAuthenticationOptions = new GroupUpAuthenticationOptions()
+            {
+                AppKey = "7775ea3941bd71874ce86ee3181c9f40",
+                AppSecret = "c65e52a09ec64bb2744b96229d6199bc",
+            };
+
+            app.UseGroupUpAuthentication(groupUpAuthenticationOptions);
+
+        }
 
         public class FacebookOauthResponse
         {

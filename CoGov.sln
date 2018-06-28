@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartbuttonData", "..\Start
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartbuttonCore", "..\StartbuttonCore\StartbuttonCore.csproj", "{A3C7B4A2-B57F-4E01-96B4-0181B8A69028}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.Security.Providers.GroupUp", "..\OwinOAuthProviders\src\Owin.Security.Providers.GroupUp\Owin.Security.Providers.GroupUp.csproj", "{CEF697B1-3651-49E5-9060-65F2E26C039C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A3C7B4A2-B57F-4E01-96B4-0181B8A69028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3C7B4A2-B57F-4E01-96B4-0181B8A69028}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3C7B4A2-B57F-4E01-96B4-0181B8A69028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF697B1-3651-49E5-9060-65F2E26C039C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF697B1-3651-49E5-9060-65F2E26C039C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF697B1-3651-49E5-9060-65F2E26C039C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF697B1-3651-49E5-9060-65F2E26C039C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

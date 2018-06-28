@@ -544,6 +544,10 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\OwinOAuthProviders\src\Owin.Security.Providers.GroupUp\Owin.Security.Providers.GroupUp.csproj">
+      <Project>{cef697b1-3651-49e5-9060-65f2e26c039c}</Project>
+      <Name>Owin.Security.Providers.GroupUp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoGovLib\CoGovLib.csproj">
       <Project>{29ef7ef3-3f75-4cde-bb20-e4b6eb25fc62}</Project>
       <Name>CoGovLib</Name>
